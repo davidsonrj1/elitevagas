@@ -28,7 +28,7 @@ export function Footer() {
             transition={{ delay: 0.1 }}
             className="text-white/40 text-sm text-center"
           >
-            © {currentYear} Elite Vagas. Feito com IA para humanos.
+            © {currentYear} Elite Vagas.
           </motion.p>
           
           {/* Links */}

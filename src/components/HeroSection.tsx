@@ -38,7 +38,7 @@ export function HeroSection() {
           transition={{ delay: 0.2 }}
           className="text-elite-green text-xs sm:text-sm tracking-[0.3em] uppercase mb-6 font-mono"
         >
-          Curadoria Inteligente de Vagas
+          Busca de Emprego com Inteligência Artificial
         </motion.p>
 
         <motion.h1
@@ -47,14 +47,12 @@ export function HeroSection() {
           transition={{ delay: 0.3, duration: 0.6 }}
           className="text-responsive-hero font-extrabold leading-[0.95] mb-8 font-display"
         >
-          Pare de caçar
+          Encontre seu
           <br />
-          <span className="highlight-underline">vagas.</span>
-          <br />
-          <span className="gradient-text">Deixe elas</span>
+          <span className="gradient-text">próximo emprego</span>
           <br />
           <span className="italic font-normal font-serif">
-            te encontrarem.
+            em 3 minutos.
           </span>
         </motion.h1>
 
@@ -62,12 +60,13 @@ export function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="text-lg text-white/60 max-w-xl mx-auto mb-12 px-4"
+          className="text-lg sm:text-xl text-white/60 max-w-2xl mx-auto mb-12 px-4"
         >
-          Nossa IA analisa seu currículo e encontra as vagas perfeitas pra você.{' '}
-          <span className="text-white">
-            Sem spam. Sem vagas genéricas. Só oportunidades reais.
-          </span>
+          Você envia seu currículo, nossa IA analisa centenas de vagas e te entrega{' '}
+          <span className="text-white font-medium">
+            as 5 que mais combinam com você.
+          </span>{' '}
+          Direto no seu email. Sem spam. Sem perder tempo.
         </motion.p>
 
         {/* CTAs */}
@@ -85,7 +84,7 @@ export function HeroSection() {
           </Button>
 
           <Button variant="outline" size="lg">
-            <a href="#como-funciona">Como funciona?</a>
+            <a href="#como-funciona">Ver como funciona</a>
           </Button>
         </motion.div>
       </Container>

@@ -35,7 +35,7 @@ export function PricingSection() {
             transition={{ delay: 0.1 }}
             className="text-elite-green text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] uppercase mb-4 sm:mb-6 font-mono"
           >
-            Preços simples
+            Escolha seu plano
           </motion.p>
           
           <motion.h2
@@ -44,12 +44,12 @@ export function PricingSection() {
             transition={{ delay: 0.2 }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 font-display"
           >
-            Menos que um{' '}
+            Quanto vale{' '}
             <span 
-              className="italic font-normal"
+              className="italic font-normal gradient-text"
               style={{ fontFamily: 'Playfair Display, serif' }}
             >
-              cafézinho.
+              seu tempo?
             </span>
           </motion.h2>
           
@@ -57,9 +57,9 @@ export function PricingSection() {
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ delay: 0.3 }}
-            className="text-base sm:text-lg md:text-xl text-white/60"
+            className="text-base sm:text-lg md:text-xl text-white/60 max-w-xl mx-auto"
           >
-            Invista em você. O retorno é um novo emprego.
+            Cada dia sem aplicar pra vaga certa é um dia a mais longe do emprego que você merece.
           </motion.p>
         </motion.div>
         

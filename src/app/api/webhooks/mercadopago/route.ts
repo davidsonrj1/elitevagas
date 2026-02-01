@@ -156,6 +156,22 @@ export async function POST(request: NextRequest) {
           plan: planId,
         }
         
+        // 0. DISPARA EMAIL DE BOAS-VINDAS (instantâneo)
+        const n8nWebhookBoasVindas = process.env.N8N_WEBHOOK_BOAS_VINDAS
+        if (n8nWebhookBoasVindas) {
+          console.log(`📧 Disparando email de boas-vindas para ${customerEmail}`)
+          try {
+            await fetch(n8nWebhookBoasVindas, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            })
+            console.log('✅ Email de boas-vindas disparado')
+          } catch (err) {
+            console.error('❌ Erro ao disparar boas-vindas:', err)
+          }
+        }
+        
         // 1. DISPARA BUSCA DE VAGAS (todos os planos)
         const n8nWebhookVagas = process.env.N8N_WEBHOOK_BUSCAR_VAGAS
         if (n8nWebhookVagas) {

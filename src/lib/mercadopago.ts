@@ -86,9 +86,9 @@ export async function createPaymentPreference(
       external_reference: customerId,
       back_urls: {
         // Todas as URLs vão para aguardando - o polling vai verificar o status real
-        success: aguardandoUrl,
-        failure: `${baseUrl}/pagamento/erro`,
-        pending: aguardandoUrl,
+        success: `${aguardandoUrl}&plan=${planId}`,
+        failure: `${baseUrl}/pagamento/erro?plan=${planId}`,
+        pending: `${aguardandoUrl}&plan=${planId}`,
       },
       auto_return: 'approved',
       notification_url: `${baseUrl}/api/webhooks/mercadopago`,

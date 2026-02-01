@@ -44,7 +44,7 @@ export function ProblemSection() {
             transition={{ delay: 0.3 }}
             className="text-xl sm:text-2xl md:text-3xl text-white/80 mb-4"
           >
-            vagas abertas agora só no LinkedIn Brasil.
+            vagas de emprego abertas agora só no LinkedIn Brasil.
           </motion.p>
           
           <motion.p
@@ -95,6 +95,15 @@ export function ProblemSection() {
             style={{ fontFamily: 'Playfair Display, serif' }}
           >
             "Tô <span className="italic text-red-400">exausto</span> de buscar emprego."
+          </motion.p>
+          
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ delay: 0.9 }}
+            className="text-base sm:text-lg text-white/40 mt-6 px-4"
+          >
+            Se você já pensou isso, a gente te entende.
           </motion.p>
         </motion.div>
       </Container>

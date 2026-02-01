@@ -14,6 +14,7 @@ function AguardandoContent() {
   
   const customerId = searchParams.get('customer_id')
   const email = searchParams.get('email')
+  const plan = searchParams.get('plan') || 'single'
   
   const [status, setStatus] = useState<PaymentStatus>('checking')
   const [checkCount, setCheckCount] = useState(0)
@@ -49,9 +50,9 @@ function AguardandoContent() {
         
         if (data.is_approved) {
           setStatus('approved')
-          // Redireciona após 2 segundos
+          // Redireciona após 2 segundos com o plano na URL
           setTimeout(() => {
-            router.push('/pagamento/sucesso')
+            router.push(`/pagamento/sucesso?plan=${plan}`)
           }, 2000)
           return true // Para o polling
         }
