@@ -15,7 +15,6 @@ interface PlanInfo {
     title: string
     description: string
     time: string
-    done: boolean
   }[]
 }
 
@@ -30,9 +29,9 @@ const PLAN_INFO: Record<string, PlanInfo> = {
       'Links diretos para aplicar'
     ],
     nextSteps: [
-      { title: 'Pagamento confirmado', description: 'Seu pagamento foi processado com sucesso', time: 'Agora', done: true },
-      { title: 'Analisando seu perfil', description: 'Nossa IA está buscando vagas compatíveis', time: '~1 min', done: false },
-      { title: 'Vagas no seu email', description: 'Você receberá 5 vagas personalizadas', time: '~3 min', done: false },
+      { title: 'Pagamento confirmado', description: 'Seu pagamento foi processado com sucesso', time: 'Agora' },
+      { title: 'Analisando seu perfil', description: 'Nossa IA está buscando vagas compatíveis', time: '~1 min' },
+      { title: 'Vagas no seu email', description: 'Você receberá 5 vagas personalizadas', time: '~3 min' },
     ]
   },
   monthly: {
@@ -45,9 +44,9 @@ const PLAN_INFO: Record<string, PlanInfo> = {
       'Suporte via WhatsApp'
     ],
     nextSteps: [
-      { title: 'Pagamento confirmado', description: 'Seu plano mensal está ativo', time: 'Agora', done: true },
-      { title: 'Primeiras vagas a caminho', description: 'Nossa IA está buscando vagas compatíveis', time: '~3 min', done: false },
-      { title: 'Alertas diários ativados', description: 'Todo dia às 8h você recebe novas vagas', time: 'A partir de amanhã', done: false },
+      { title: 'Pagamento confirmado', description: 'Seu plano mensal está ativo', time: 'Agora' },
+      { title: 'Primeiras vagas a caminho', description: 'Nossa IA está buscando vagas compatíveis', time: '~3 min' },
+      { title: 'Alertas diários ativados', description: 'Todo dia às 8h você recebe novas vagas', time: 'A partir de amanhã' },
     ]
   },
   quarterly: {
@@ -61,9 +60,9 @@ const PLAN_INFO: Record<string, PlanInfo> = {
       'Suporte prioritário'
     ],
     nextSteps: [
-      { title: 'Pagamento confirmado', description: 'Seu plano trimestral está ativo', time: 'Agora', done: true },
-      { title: 'Vagas + Análise de CV', description: 'Estamos preparando tudo pra você', time: '~5 min', done: false },
-      { title: 'Alertas diários ativados', description: 'Todo dia às 8h você recebe novas vagas', time: 'A partir de amanhã', done: false },
+      { title: 'Pagamento confirmado', description: 'Seu plano trimestral está ativo', time: 'Agora' },
+      { title: 'Vagas + Análise de CV', description: 'Estamos preparando tudo pra você', time: '~5 min' },
+      { title: 'Alertas diários ativados', description: 'Todo dia às 8h você recebe novas vagas', time: 'A partir de amanhã' },
     ]
   }
 }
@@ -72,19 +71,29 @@ function SuccessContent() {
   const searchParams = useSearchParams()
   const [isLoading, setIsLoading] = useState(true)
   const [currentStep, setCurrentStep] = useState(0)
+  const [allComplete, setAllComplete] = useState(false)
   
   const planId = searchParams.get('plan') || 'single'
   const plan = PLAN_INFO[planId] || PLAN_INFO.single
 
   useEffect(() => {
+    // Timer 1: Remove loading inicial
     const timer1 = setTimeout(() => setIsLoading(false), 2000)
+    
+    // Timer 2: Avança para step 1
     const timer2 = setTimeout(() => setCurrentStep(1), 4000)
+    
+    // Timer 3: Avança para step 2
     const timer3 = setTimeout(() => setCurrentStep(2), 8000)
+    
+    // Timer 4: Marca tudo como completo após 12 segundos
+    const timer4 = setTimeout(() => setAllComplete(true), 12000)
     
     return () => {
       clearTimeout(timer1)
       clearTimeout(timer2)
       clearTimeout(timer3)
+      clearTimeout(timer4)
     }
   }, [])
 
@@ -136,8 +145,9 @@ function SuccessContent() {
         
         <div className="space-y-4">
           {plan.nextSteps.map((step, index) => {
-            const isCompleted = index <= currentStep
-            const isCurrent = index === currentStep
+            const isCompleted = allComplete || index <= currentStep
+            const isCurrent = !allComplete && index === currentStep
+            const isLast = index === plan.nextSteps.length - 1
             
             return (
               <motion.div
@@ -162,7 +172,7 @@ function SuccessContent() {
                       <span className="text-sm font-bold">{index + 1}</span>
                     )}
                   </div>
-                  {index < plan.nextSteps.length - 1 && (
+                  {!isLast && (
                     <div className={`w-0.5 h-8 mt-1 ${isCompleted ? 'bg-elite-green/50' : 'bg-white/10'}`} />
                   )}
                 </div>
@@ -174,12 +184,13 @@ function SuccessContent() {
                       {step.title}
                     </h3>
                     <span className={`text-xs ${isCompleted ? 'text-elite-green' : 'text-white/40'}`}>
-                      {step.time}
+                      {allComplete && isLast ? '✓ Enviado!' : step.time}
                     </span>
                   </div>
                   <p className="text-sm text-white/50 mt-1">{step.description}</p>
                   
-                  {isCurrent && !step.done && (
+                  {/* Mostra "Processando..." apenas se é o step atual E não está tudo completo */}
+                  {isCurrent && !allComplete && (
                     <div className="flex items-center gap-2 mt-2">
                       <SpinnerIcon size={14} className="text-elite-green" />
                       <span className="text-xs text-elite-green">Processando...</span>
@@ -191,6 +202,19 @@ function SuccessContent() {
           })}
         </div>
       </div>
+
+      {/* Mensagem de sucesso quando tudo completar */}
+      {allComplete && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-elite-green/20 border border-elite-green/30 rounded-xl p-4 mb-6"
+        >
+          <p className="text-sm text-elite-green text-center font-medium">
+            ✅ Tudo pronto! Confira seu email em instantes.
+          </p>
+        </motion.div>
+      )}
 
       {/* Benefícios do plano */}
       <div className="bg-elite-green/10 border border-elite-green/20 rounded-2xl p-6 mb-6">
