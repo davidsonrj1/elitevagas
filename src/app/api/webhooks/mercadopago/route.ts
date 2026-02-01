@@ -1,6 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { mercadopago, PLANS, PlanId } from '@/lib/mercadopago'
+import crypto from 'crypto'
+
+// Valida assinatura do Mercado Pago
+function validateMPSignature(request: NextRequest, body: any): boolean {
+  const signature = request.headers.get('x-signature')
+  const requestId = request.headers.get('x-request-id')
+  const secret = process.env.MP_WEBHOOK_SECRET
+  
+  // Se não tem secret configurada, pula validação (dev mode)
+  if (!secret) {
+    console.warn('⚠️ MP_WEBHOOK_SECRET não configurada - validação desabilitada')
+    return true
+  }
+  
+  if (!signature || !requestId) {
+    console.error('❌ Headers de assinatura ausentes')
+    return false
+  }
+  
+  try {
+    // Extrai ts e hash do header x-signature
+    // Formato: ts=TIMESTAMP,v1=HASH
+    const parts = signature.split(',')
+    const tsMatch = parts.find(p => p.startsWith('ts='))
+    const hashMatch = parts.find(p => p.startsWith('v1='))
+    
+    if (!tsMatch || !hashMatch) {
+      console.error('❌ Formato de assinatura inválido')
+      return false
+    }
+    
+    const ts = tsMatch.replace('ts=', '')
+    const receivedHash = hashMatch.replace('v1=', '')
+    
+    // Monta o template para validação
+    // Formato: id:[data.id];request-id:[x-request-id];ts:[ts];
+    const dataId = body.data?.id || ''
+    const template = `id:${dataId};request-id:${requestId};ts:${ts};`
+    
+    // Gera o hash esperado
+    const expectedHash = crypto
+      .createHmac('sha256', secret)
+      .update(template)
+      .digest('hex')
+    
+    // Compara os hashes
+    const isValid = crypto.timingSafeEqual(
+      Buffer.from(receivedHash),
+      Buffer.from(expectedHash)
+    )
+    
+    if (!isValid) {
+      console.error('❌ Assinatura inválida', { received: receivedHash, expected: expectedHash })
+    }
+    
+    return isValid
+  } catch (error) {
+    console.error('❌ Erro ao validar assinatura:', error)
+    return false
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,6 +76,12 @@ export async function POST(request: NextRequest) {
       body = await request.json()
     } catch {
       // Body vazio é ok pro IPN
+    }
+    
+    // VALIDA ASSINATURA DO MERCADO PAGO
+    if (!validateMPSignature(request, body)) {
+      console.error('🚫 Requisição rejeitada: assinatura inválida')
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 })
     }
     
     // Normaliza: aceita tanto IPN quanto Webhook
@@ -220,6 +287,26 @@ export async function POST(request: NextRequest) {
             } catch (err) {
               console.error('❌ Erro ao disparar análise de CV:', err)
             }
+          }
+        }
+        
+        // 3. SALVA VENDA NO GOOGLE SHEETS
+        const n8nWebhookVenda = process.env.N8N_WEBHOOK_SALVAR_VENDA
+        if (n8nWebhookVenda) {
+          console.log(`📊 Salvando venda no Sheets`)
+          try {
+            await fetch(n8nWebhookVenda, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                ...payload,
+                amount: payment.transaction_amount,
+                status: 'approved'
+              }),
+            })
+            console.log('✅ Venda salva no Sheets')
+          } catch (err) {
+            console.error('❌ Erro ao salvar venda:', err)
           }
         }
         
