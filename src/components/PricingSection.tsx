@@ -7,42 +7,6 @@ import { Section, Container, Card, Button, Badge } from './ui'
 import { CheckIcon } from './Icons'
 import { PLANS, PlanId } from '@/lib/mercadopago'
 
-// Logo do Mercado Pago (SVG inline para não depender de arquivo externo)
-function MercadoPagoLogo({ className = '' }: { className?: string }) {
-  return (
-    <svg 
-      className={className}
-      viewBox="0 0 152 40" 
-      fill="none" 
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      {/* Ícone do MP */}
-      <path 
-        d="M20 4C11.163 4 4 11.163 4 20s7.163 16 16 16 16-7.163 16-16S28.837 4 20 4zm0 28c-6.627 0-12-5.373-12-12S13.373 8 20 8s12 5.373 12 12-5.373 12-12 12z" 
-        fill="#00AEEF"
-      />
-      <path 
-        d="M20 12c-4.418 0-8 3.582-8 8s3.582 8 8 8 8-3.582 8-8-3.582-8-8-8zm3.5 9.5l-4.5 3v-6l4.5 3z" 
-        fill="#00AEEF"
-      />
-      {/* Texto "mercado pago" */}
-      <text x="44" y="24" fill="currentColor" fontSize="14" fontFamily="Arial, sans-serif" fontWeight="500">
-        mercado pago
-      </text>
-    </svg>
-  )
-}
-
-// Ícone de escudo/segurança
-function ShieldIcon({ className = '' }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-      <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  )
-}
-
 // Ícone de cadeado
 function LockIcon({ className = '' }: { className?: string }) {
   return (
@@ -53,12 +17,12 @@ function LockIcon({ className = '' }: { className?: string }) {
   )
 }
 
-// Ícone de garantia/medalha
-function GuaranteeIcon({ className = '' }: { className?: string }) {
+// Ícone de shield/escudo
+function ShieldIcon({ className = '' }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-      <circle cx="12" cy="8" r="6" />
-      <path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11" />
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+      <path d="M9 12l2 2 4-4" />
     </svg>
   )
 }
@@ -100,12 +64,12 @@ export function PricingSection() {
             transition={{ delay: 0.2 }}
             className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 font-display"
           >
-            Quanto vale{' '}
+            Invista em{' '}
             <span 
               className="italic font-normal gradient-text"
               style={{ fontFamily: 'Playfair Display, serif' }}
             >
-              seu tempo?
+              você
             </span>
           </motion.h2>
           
@@ -115,7 +79,7 @@ export function PricingSection() {
             transition={{ delay: 0.3 }}
             className="text-base sm:text-lg md:text-xl text-white/60 max-w-xl mx-auto"
           >
-            Cada dia sem aplicar pra vaga certa é um dia a mais longe do emprego que você merece.
+            Menos que um cafezinho por dia para encontrar sua próxima oportunidade.
           </motion.p>
         </motion.div>
         
@@ -178,14 +142,13 @@ export function PricingSection() {
           ))}
         </div>
         
-        {/* Trust Badges - Seção de Segurança */}
+        {/* Trust Badges */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.8 }}
           className="mt-12"
         >
-          {/* Container principal dos badges */}
           <div className="bg-white/[0.03] border border-white/10 rounded-2xl p-6 sm:p-8">
             {/* Badges em grid */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8">
@@ -202,7 +165,6 @@ export function PricingSection() {
               {/* Badge 2: Mercado Pago */}
               <div className="flex flex-col items-center text-center">
                 <div className="w-12 h-12 bg-[#00AEEF]/10 rounded-full flex items-center justify-center mb-3 overflow-hidden">
-                  {/* Logo oficial do Mercado Pago */}
                   <img 
                     src="/images/mercadopago-logo.png" 
                     alt="Mercado Pago" 
@@ -226,7 +188,7 @@ export function PricingSection() {
             {/* Linha divisória */}
             <div className="border-t border-white/10 my-6" />
             
-            {/* Rodapé com logo do Mercado Pago e métodos de pagamento */}
+            {/* Rodapé com métodos de pagamento */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8">
               {/* Logo Mercado Pago */}
               <div className="flex items-center gap-2">

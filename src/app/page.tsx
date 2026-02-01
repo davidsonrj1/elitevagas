@@ -6,6 +6,10 @@ import {
   HeroSection,
   ProblemSection,
   SolutionSection,
+  BenefitsSection,
+  ObjectionSection,
+  ValueSection,
+  ClosingSection,
   PricingSection,
   Footer,
   ProgressBar,
@@ -32,10 +36,29 @@ export default function HomePage() {
       <Header />
       
       <main>
+        {/* 1. HERO - Pattern interrupt + Promise */}
         <HeroSection />
+        
+        {/* 2. DOR - Agitate the problem */}
         <ProblemSection />
+        
+        {/* 3. SOLUÇÃO - Present the solution */}
         <SolutionSection />
+        
+        {/* 4. BENEFÍCIOS - Stack the benefits */}
+        <BenefitsSection />
+        
+        {/* 5. QUEBRA DE OBJEÇÃO - Handle objections */}
+        <ObjectionSection />
+        
+        {/* 6. VALOR/TEMPO - Reframe value */}
+        <ValueSection />
+        
+        {/* 7. PREÇOS - Pricing section */}
         <PricingSection />
+        
+        {/* 8. FECHAMENTO - Final CTA */}
+        <ClosingSection />
       </main>
       
       <Footer />

@@ -4,15 +4,11 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Section, Container } from './ui'
 
-const chaosCards = [
-  'Vaga Urgente!!!',
-  'Home Office R$1500',
-  'CLT + Benefícios',
-  'PJ Remoto',
-  'Estágio TI',
-  'Dev Pleno',
-  'Freelancer',
-  'Trainee',
+const painPoints = [
+  'Abrindo sites de vagas que não têm nada a ver com você',
+  'Lendo descrições intermináveis pra descobrir que não é o que busca',
+  'Enviando currículo no automático, sem estratégia',
+  'E nunca recebendo uma resposta sequer',
 ]
 
 export function ProblemSection() {
@@ -20,91 +16,85 @@ export function ProblemSection() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   
   return (
-    <Section id="problema" className="bg-gradient-to-b from-elite-dark via-[#1a0a0a] to-elite-dark">
+    <Section id="problema" className="bg-gradient-to-b from-elite-dark via-[#1a0808] to-elite-dark">
       <Container size="md" className="text-center">
         <motion.div
           ref={ref}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={isInView ? { opacity: 1, scale: 1 } : {}}
+          initial={{ opacity: 0 }}
+          animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6 }}
         >
-          {/* Big number */}
-          <motion.div
+          {/* Section label */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.1 }}
+            className="text-red-400/80 text-xs sm:text-sm tracking-[0.2em] uppercase mb-6 font-mono"
+          >
+            O problema
+          </motion.p>
+
+          {/* Main headline */}
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.2 }}
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black mb-6 sm:mb-8 text-red-500/80 font-display"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-10 font-display"
           >
-            847
-          </motion.div>
+            Você já{' '}
+            <span className="text-red-400">perdeu horas</span>:
+          </motion.h2>
           
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.3 }}
-            className="text-xl sm:text-2xl md:text-3xl text-white/80 mb-4"
-          >
-            vagas de emprego abertas agora só no LinkedIn Brasil.
-          </motion.p>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.4 }}
-            className="text-base sm:text-lg md:text-xl text-white/50 max-w-2xl mx-auto mb-10 sm:mb-12 px-4"
-          >
-            Quantas você tem tempo de analisar? Quantas são realmente pra você?
-            <span className="text-red-400"> Quantas são spam de recrutador?</span>
-          </motion.p>
-          
-          {/* Chaos cards */}
+          {/* Pain points list */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
-            transition={{ delay: 0.5 }}
-            className="relative h-24 sm:h-32 md:h-40 overflow-hidden my-8 sm:my-12"
+            transition={{ delay: 0.3 }}
+            className="space-y-4 mb-12 max-w-xl mx-auto"
           >
-            <div className="absolute inset-0 flex flex-wrap justify-center items-center gap-2 sm:gap-3 md:gap-4 px-4">
-              {chaosCards.map((text, i) => (
-                <motion.span
-                  key={i}
-                  animate={{
-                    y: [0, Math.random() * 10 - 5, 0],
-                    rotate: [0, Math.random() * 6 - 3, 0],
-                    opacity: [0.4, 0.7, 0.4],
-                  }}
-                  transition={{
-                    duration: 2 + Math.random() * 2,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                  }}
-                  className="px-2 sm:px-3 py-1 sm:py-1.5 bg-white/5 border border-white/10 rounded text-[10px] sm:text-xs md:text-sm text-white/40 whitespace-nowrap"
-                >
-                  {text}
-                </motion.span>
-              ))}
-            </div>
+            {painPoints.map((point, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ delay: 0.4 + i * 0.1 }}
+                className="flex items-start gap-4 text-left"
+              >
+                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center mt-0.5">
+                  <svg className="w-3 h-3 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </span>
+                <p className="text-base sm:text-lg md:text-xl text-white/70">
+                  {point}
+                </p>
+              </motion.div>
+            ))}
           </motion.div>
           
-          {/* Quote */}
-          <motion.p
+          {/* Divider */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={isInView ? { scaleX: 1 } : {}}
+            transition={{ delay: 0.8, duration: 0.6 }}
+            className="w-24 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mx-auto mb-12"
+          />
+          
+          {/* Reframe - The real problem */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.7 }}
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium mt-8 px-4"
-            style={{ fontFamily: 'Playfair Display, serif' }}
-          >
-            "Tô <span className="italic text-red-400">exausto</span> de buscar emprego."
-          </motion.p>
-          
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={isInView ? { opacity: 1 } : {}}
             transition={{ delay: 0.9 }}
-            className="text-base sm:text-lg text-white/40 mt-6 px-4"
+            className="space-y-3"
           >
-            Se você já pensou isso, a gente te entende.
-          </motion.p>
+            <p className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium font-serif">
+              O problema{' '}
+              <span className="italic text-red-400">não é você</span>.
+            </p>
+            <p className="text-xl sm:text-2xl md:text-3xl text-white/60">
+              É o método.
+            </p>
+          </motion.div>
         </motion.div>
       </Container>
     </Section>

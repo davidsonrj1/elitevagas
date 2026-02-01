@@ -2,27 +2,24 @@
 
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Section, Container, Card } from './ui'
-import { DocumentIcon, AiIcon, SparklesIcon } from './Icons'
+import { Section, Container, Card, Button } from './ui'
+import { DocumentIcon, AiIcon, SparklesIcon, ArrowRightIcon } from './Icons'
 
 const steps = [
   {
-    number: '01',
-    title: 'Envie seu CV',
-    description: 'Nossa IA lê e entende suas skills, experiência e o que você realmente quer.',
     icon: DocumentIcon,
+    title: 'Analisa seu currículo',
+    description: 'Entende suas habilidades, experiência e o que você realmente busca.',
   },
   {
-    number: '02',
-    title: 'IA faz o trabalho',
-    description: 'Analisamos centenas de vagas e calculamos compatibilidade real com seu perfil.',
     icon: AiIcon,
+    title: 'Cruza com centenas de vagas',
+    description: 'Compara seu perfil com oportunidades reais do mercado em segundos.',
   },
   {
-    number: '03',
-    title: 'Receba curadoria',
-    description: 'Top 5 vagas com score de match, resumo executivo e link direto pra aplicar.',
     icon: SparklesIcon,
+    title: 'Seleciona as que combinam',
+    description: 'Filtra e entrega apenas as vagas com maior compatibilidade com você.',
   },
 ]
 
@@ -37,72 +34,122 @@ export function SolutionSection() {
           ref={ref}
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
-          className="text-center mb-12 sm:mb-16"
+          className="text-center mb-16"
         >
+          {/* Section label */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.1 }}
-            className="text-elite-green text-xs sm:text-sm tracking-[0.2em] sm:tracking-[0.3em] uppercase mb-4 sm:mb-6 font-mono"
+            className="text-elite-green text-xs sm:text-sm tracking-[0.2em] uppercase mb-6 font-mono"
           >
-            A solução
+            A Solução
           </motion.p>
           
+          {/* Main headline */}
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ delay: 0.2 }}
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold font-display"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 font-display"
           >
-            3 minutos. <span className="gradient-text">5 vagas perfeitas.</span>
+            A Elite Vagas faz o{' '}
+            <br className="hidden sm:block" />
+            <span className="gradient-text">trabalho pesado</span>{' '}
+            por você
           </motion.h2>
+          
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ delay: 0.3 }}
+            className="text-base sm:text-lg text-white/50 max-w-xl mx-auto"
+          >
+            Nossa IA faz em segundos o que você levaria horas fazendo manualmente.
+          </motion.p>
         </motion.div>
         
-        {/* Steps */}
-        <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-          {steps.map((step, i) => {
-            const Icon = step.icon
-            return (
-              <motion.div
-                key={step.number}
-                initial={{ opacity: 0, y: 40 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.3 + i * 0.15 }}
-              >
-                <Card hover className="h-full relative overflow-hidden group">
-                  {/* Step number badge */}
-                  <div className="absolute -top-3 -left-3 sm:-top-4 sm:-left-4 w-10 h-10 sm:w-12 sm:h-12 bg-elite-green rounded-full flex items-center justify-center text-black font-bold text-xs sm:text-sm font-mono">
-                    {step.number}
-                  </div>
+        {/* How it works - Steps */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4 }}
+          className="mb-16"
+        >
+          <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+            {steps.map((step, i) => {
+              const Icon = step.icon
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 40 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.5 + i * 0.15 }}
+                  className="relative"
+                >
+                  {/* Connecting line (desktop) */}
+                  {i < steps.length - 1 && (
+                    <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-px bg-gradient-to-r from-white/10 to-transparent" />
+                  )}
                   
-                  {/* Icon */}
-                  <div className="mb-4 sm:mb-6 mt-2">
-                    <Icon 
-                      size={40} 
-                      className="text-elite-green/80 group-hover:text-elite-green transition-colors" 
-                    />
-                  </div>
-                  
-                  {/* Content */}
-                  <h3 className="text-lg sm:text-xl font-bold mb-2 font-display">
-                    {step.title}
-                  </h3>
-                  <p className="text-sm sm:text-base text-white/60">
-                    {step.description}
-                  </p>
-                  
-                  {/* Hover gradient overlay */}
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-elite-green/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
-                </Card>
-              </motion.div>
-            )
-          })}
-        </div>
+                  <Card hover className="h-full relative overflow-hidden group">
+                    {/* Step number */}
+                    <div className="absolute top-4 right-4 text-5xl font-black text-white/[0.03] font-display">
+                      0{i + 1}
+                    </div>
+                    
+                    {/* Icon */}
+                    <div className="mb-5 relative z-10">
+                      <div className="w-14 h-14 bg-elite-green/10 rounded-2xl flex items-center justify-center group-hover:bg-elite-green/20 transition-colors">
+                        <Icon 
+                          size={28} 
+                          className="text-elite-green" 
+                        />
+                      </div>
+                    </div>
+                    
+                    {/* Content */}
+                    <h3 className="text-lg sm:text-xl font-bold mb-2 font-display relative z-10">
+                      {step.title}
+                    </h3>
+                    <p className="text-sm sm:text-base text-white/50 relative z-10">
+                      {step.description}
+                    </p>
+                  </Card>
+                </motion.div>
+              )
+            })}
+          </div>
+        </motion.div>
         
-        {/* Connecting line (desktop only) */}
-        <div className="hidden md:block relative mt-8">
-          <div className="absolute top-1/2 left-1/4 right-1/4 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-        </div>
+        {/* Result highlight */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.9 }}
+          className="text-center"
+        >
+          <div className="inline-block bg-gradient-to-r from-elite-green/10 via-elite-green/5 to-elite-green/10 border border-elite-green/20 rounded-2xl p-8 sm:p-10 max-w-2xl mx-auto">
+            <p className="text-xl sm:text-2xl md:text-3xl font-medium mb-2">
+              Você recebe somente{' '}
+              <span className="text-elite-green font-bold">oportunidades relevantes</span>.
+            </p>
+            <p className="text-base sm:text-lg text-white/50 mb-6">
+              Sem estresse. Sem spam. Sem desperdício de tempo.
+            </p>
+            
+            <Button size="lg" className="group">
+              <a href="#precos" className="flex items-center gap-2">
+                COMEÇAR AGORA
+                <ArrowRightIcon size={20} className="group-hover:translate-x-1 transition-transform" />
+              </a>
+            </Button>
+            
+            <p className="text-xs text-white/40 mt-3">
+              Demora menos que fazer um café.
+            </p>
+          </div>
+        </motion.div>
       </Container>
     </Section>
   )
