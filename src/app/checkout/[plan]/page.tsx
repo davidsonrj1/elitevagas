@@ -140,8 +140,11 @@ export default function CheckoutPage() {
       
       const data = await response.json()
       
-      if (!response.ok) {
-        throw new Error(data.error || 'Erro ao processar CV')
+      // Trata o novo formato de erro
+      if (!response.ok || data.success === false) {
+        // Pega a mensagem de erro do novo formato
+        const errorMessage = data.error?.message || data.error || 'Erro ao processar CV'
+        throw new Error(errorMessage)
       }
       
       setCvData(data.cv_data)
@@ -338,17 +341,38 @@ export default function CheckoutPage() {
                       </div>
                     )}
                   </div>
+                  
+                  {/* Dica de ajuda */}
+                  <div className="mt-4 p-3 bg-white/5 rounded-lg">
+                    <p className="text-xs text-white/50">
+                      💡 <strong>Dica:</strong> Seu currículo deve conter texto selecionável. 
+                      PDFs escaneados (imagens) podem não funcionar. 
+                      Se tiver problemas, tente salvar como DOCX.
+                    </p>
+                  </div>
                 </div>
                 
-                {/* Error message */}
+                {/* Error message - MELHORADO */}
                 {error && (
-                  <motion.p
+                  <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-red-400 text-sm mb-4 text-center"
+                    className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl mb-4"
                   >
-                    {error}
-                  </motion.p>
+                    <div className="flex items-start gap-3">
+                      <div className="w-5 h-5 mt-0.5 flex-shrink-0">
+                        <svg viewBox="0 0 20 20" fill="currentColor" className="text-red-400">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-red-400 font-medium text-sm">{error}</p>
+                        <p className="text-red-400/60 text-xs mt-1">
+                          Se o problema persistir, entre em contato pelo WhatsApp.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
                 )}
                 
                 {/* Submit button */}
@@ -451,15 +475,27 @@ export default function CheckoutPage() {
                   </p>
                 </div>
                 
-                {/* Error message */}
+                {/* Error message - MELHORADO */}
                 {error && (
-                  <motion.p
+                  <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-red-400 text-sm mb-4 text-center"
+                    className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl mb-4"
                   >
-                    {error}
-                  </motion.p>
+                    <div className="flex items-start gap-3">
+                      <div className="w-5 h-5 mt-0.5 flex-shrink-0">
+                        <svg viewBox="0 0 20 20" fill="currentColor" className="text-red-400">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clipRule="evenodd" />
+                        </svg>
+                      </div>
+                      <div>
+                        <p className="text-red-400 font-medium text-sm">{error}</p>
+                        <p className="text-red-400/60 text-xs mt-1">
+                          Se o problema persistir, entre em contato pelo WhatsApp.
+                        </p>
+                      </div>
+                    </div>
+                  </motion.div>
                 )}
                 
                 {/* Actions */}
