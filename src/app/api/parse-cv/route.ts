@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Envia para n8n
-    const n8nWebhook = process.env.N8N_WEBHOOK_UPLOAD_CV
+    const n8nWebhook = process.env.N8N_WEBHOOK_ANALISE_CV
     
     if (!n8nWebhook) {
       console.error('❌ N8N_WEBHOOK_UPLOAD_CV não configurado')
