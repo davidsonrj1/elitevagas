@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     // Log do texto extraído para debug
     console.log('📝 Texto extraído (preview):', extractedText.substring(0, 500))
     
-    // Se não extraiu texto suficiente
+    // Se não extraiu texto suficiente, retorna fallback
     if (extractedText.length < 50) {
       console.warn('⚠️ Texto insuficiente, retornando fallback')
       return NextResponse.json({
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
           skills: ['Tecnologia'],
           localidade: 'Brasil',
           modelo_trabalho: 'Qualquer',
-          anos_experiencia: 1,
+          anos_experiencia: 2,
           idiomas: ['Português'],
           formacao: 'Não identificado',
         },
@@ -82,14 +82,16 @@ export async function POST(request: NextRequest) {
     }
     
     // Envia para n8n
-    const n8nWebhook = process.env.N8N_WEBHOOK_ANALISE_CV
+    const n8nWebhook = process.env.N8N_WEBHOOK_PARSE_CV
     
     if (!n8nWebhook) {
-      console.error('❌ N8N_WEBHOOK_UPLOAD_CV não configurado')
-      return NextResponse.json({ error: 'Webhook não configurado' }, { status: 500 })
+      console.error('❌ N8N_WEBHOOK_PARSE_CV não configurado')
+      return NextResponse.json({ 
+        error: 'Webhook não configurado. Configure N8N_WEBHOOK_PARSE_CV nas variáveis de ambiente.' 
+      }, { status: 500 })
     }
     
-    console.log('🚀 Enviando para n8n...')
+    console.log('🚀 Enviando para n8n:', n8nWebhook)
     console.log('📊 Tamanho do texto:', extractedText.length, 'caracteres')
     
     const response = await fetch(n8nWebhook, {
@@ -102,13 +104,43 @@ export async function POST(request: NextRequest) {
       }),
     })
     
+    // Log detalhado da resposta
+    console.log('📡 Status n8n:', response.status)
+    
     if (!response.ok) {
-      console.error('❌ Erro n8n:', response.status)
-      throw new Error('Erro ao processar no servidor')
+      const errorText = await response.text()
+      console.error('❌ Erro n8n:', response.status, errorText)
+      throw new Error(`Erro no servidor n8n: ${response.status}`)
     }
     
-    const data = await response.json()
-    console.log('✅ Resposta n8n recebida:', JSON.stringify(data).substring(0, 200))
+    // Tenta parsear a resposta
+    const responseText = await response.text()
+    console.log('📥 Resposta bruta n8n:', responseText.substring(0, 500))
+    
+    if (!responseText || responseText.trim() === '') {
+      console.error('❌ Resposta vazia do n8n')
+      throw new Error('O servidor retornou uma resposta vazia')
+    }
+    
+    let data
+    try {
+      data = JSON.parse(responseText)
+    } catch (parseError) {
+      console.error('❌ Erro ao parsear JSON:', parseError)
+      console.error('📄 Resposta recebida:', responseText)
+      throw new Error('Resposta inválida do servidor (não é JSON)')
+    }
+    
+    console.log('✅ Resposta n8n parseada:', JSON.stringify(data).substring(0, 200))
+    
+    // Verifica se tem cv_data
+    if (!data.cv_data && !data.success) {
+      console.warn('⚠️ Resposta sem cv_data, usando resposta completa')
+      return NextResponse.json({
+        success: true,
+        cv_data: data,
+      })
+    }
     
     return NextResponse.json({
       success: true,
@@ -116,8 +148,11 @@ export async function POST(request: NextRequest) {
     })
     
   } catch (error: any) {
-    console.error('❌ Erro:', error)
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    console.error('❌ Erro completo:', error)
+    return NextResponse.json({ 
+      error: error.message || 'Erro ao processar currículo',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    }, { status: 500 })
   }
 }
 
