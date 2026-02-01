@@ -143,7 +143,16 @@ export default function CheckoutPage() {
       // Trata o novo formato de erro
       if (!response.ok || data.success === false) {
         // Pega a mensagem de erro do novo formato
-        const errorMessage = data.error?.message || data.error || 'Erro ao processar CV'
+        let errorMessage = 'Erro ao processar CV. Tente novamente.'
+        
+        if (typeof data.error === 'string') {
+          errorMessage = data.error
+        } else if (data.error?.message) {
+          errorMessage = data.error.message
+        } else if (data.message) {
+          errorMessage = data.message
+        }
+        
         throw new Error(errorMessage)
       }
       

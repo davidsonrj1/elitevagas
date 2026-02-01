@@ -41,7 +41,7 @@ const ERRORS = {
   TEXT_TOO_SHORT: {
     code: 'TEXT_TOO_SHORT',
     message: 'Texto extraído insuficiente',
-    userMessage: 'Conseguimos extrair muito pouco texto do seu currículo. Verifique se o arquivo contém texto selecionável (não é uma imagem). Se for um PDF escaneado, tente converter para DOCX.',
+    userMessage: 'Não conseguimos ler o texto do seu currículo. Isso pode acontecer com templates do Canva, Zety ou currículos com muito design gráfico. Tente enviar um currículo mais simples feito no Word.',
   },
   WEBHOOK_NOT_CONFIGURED: {
     code: 'WEBHOOK_NOT_CONFIGURED',
