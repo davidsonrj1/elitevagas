@@ -34,16 +34,33 @@ export async function POST(request: NextRequest) {
     
     const supabase = supabaseAdmin()
     
-    // VERIFICA SE JÁ PROCESSOU ESTE PAGAMENTO
+    // VERIFICA SE JÁ PROCESSOU ESTE PAGAMENTO (proteção contra duplicatas)
     const { data: existingPayment } = await supabase
       .from('payments')
-      .select('status')
+      .select('status, emails_sent')
       .eq('mercadopago_payment_id', String(paymentId))
       .single()
     
-    if (existingPayment?.status === 'approved') {
-      console.log('⏭️ Pagamento já processado como approved, ignorando duplicata...')
+    if (existingPayment?.status === 'approved' && existingPayment?.emails_sent) {
+      console.log('⏭️ Pagamento já processado e emails enviados, ignorando duplicata...')
       return NextResponse.json({ received: true, skipped: true })
+    }
+    
+    // Se já existe um registro sendo processado, aguarda um pouco e verifica de novo
+    if (existingPayment?.status === 'approved' && !existingPayment?.emails_sent) {
+      console.log('⏳ Pagamento em processamento por outra requisição, aguardando...')
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      const { data: recheck } = await supabase
+        .from('payments')
+        .select('emails_sent')
+        .eq('mercadopago_payment_id', String(paymentId))
+        .single()
+      
+      if (recheck?.emails_sent) {
+        console.log('⏭️ Emails já foram enviados por outra requisição')
+        return NextResponse.json({ received: true, skipped: true })
+      }
     }
     
     // Busca detalhes do pagamento no Mercado Pago
@@ -214,6 +231,14 @@ export async function POST(request: NextRequest) {
           cv_data: cvData,
           source: 'payment_approved',
         })
+        
+        // MARCA QUE OS EMAILS FORAM ENVIADOS (previne duplicatas)
+        await supabase
+          .from('payments')
+          .update({ emails_sent: true })
+          .eq('mercadopago_payment_id', String(paymentId))
+        
+        console.log('✅ Flag emails_sent marcada como true')
       } else {
         console.warn('⚠️ Não foi possível disparar buscas:', {
           hasEmail: !!customerEmail,
